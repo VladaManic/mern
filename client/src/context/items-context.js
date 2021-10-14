@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-//import axios from 'axios';
+import axios from 'axios';
 
 const ItemsContext = createContext({
 	items: [],
@@ -9,22 +9,28 @@ const ItemsContext = createContext({
 });
 
 export function ItemsContextProvider(props){
-	const [currentItems, setCurrentItems] = useState([{'_id': 1, 'name': 'Milk'},{'_id': 2, 'name': 'Water'}])
+	const [currentItems, setCurrentItems] = useState([])
 
 	const getItemsHandler = () => {
-
+		axios.get('/api/items').then((res) => {
+			setCurrentItems(res.data)
+		})
 	}
 
-	const addItemHandler = (currentItem) => {
-		setCurrentItems((prevCurrentItems) => {
-			return prevCurrentItems.concat(currentItem);
-		});
+	const addItemHandler = (item) => {
+		axios.post('/api/items', item).then((res) => {
+			setCurrentItems((prevCurrentItems) => {
+				return prevCurrentItems.concat(res.data)
+			})
+		})
 	}
 
 	const deleteItemHandler = (id) => {
-		setCurrentItems((prevCurrentItems) => {
-			return prevCurrentItems.filter(item => item._id !== id);
-		});
+		axios.delete(`/api/items/${id}`).then((res) => {
+			setCurrentItems((prevCurrentItems) => {
+				return prevCurrentItems.filter(item => item._id !== res.data._id)
+			})
+		})
 	}
 
 	const context = {

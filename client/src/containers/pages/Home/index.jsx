@@ -1,9 +1,13 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import ItemsContext from '../../../context/items-context';
 import Delete from '../../../shared/components/Delete';
 
 const Home = () => {
 	const itemsCtx = useContext(ItemsContext)
+
+	useEffect(() => {
+		itemsCtx.getItems()
+	}, [itemsCtx])
 
 	return (
 		<div>
